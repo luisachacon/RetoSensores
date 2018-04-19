@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         }catch (KeyStoreException e){
             e.printStackTrace();
         }
-        KeyGenerator  keyGenerator;
+        KeyGenerator  keyGenerator = null;
         try {
             keyGenerator=KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES,"AndroidKeyStore");
         } catch (NoSuchAlgorithmException e) {
@@ -122,9 +122,12 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             keyStore.load(null);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 keyGenerator.init(new KeyGenParameterSpec.Builder(Key_NAME,KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                         .setUserAuthenticationRequired(true)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7).build());
+                        .setEncryptionPaddings
+                                (KeyProperties.ENCRYPTION_PADDING_PKCS7).build());
+            }
             keyGenerator.generateKey();
 
         } catch (IOException e) {
